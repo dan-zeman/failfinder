@@ -15,6 +15,8 @@ parser.add_option("-n", "--n-gram",dest="ng",default=8,type="int",
 parser.add_option("-p", "--prob",dest="prob",default=0.5,type="float",
                         help="The probability for highest ngram", metavar="NUM")
 
+parser.add_option("-s", "--split-prefix",dest="sprefix",default="sent.",
+                        help="The prefix for single sentence.", metavar="PREFIX")
 
 (options, args) = parser.parse_args()
 
@@ -59,6 +61,10 @@ for line in inp:
 	sntno += 1;
 	txt = line.strip().split();
 	ofname = options.output+"%05d.sri" % sntno;
+	osname = options.sprefix+"%05d.txt" % sntno;
+	osfile = open(osname,"w");
+	osfile.write(line);
+	osfile.close();
 	for i in range(1,maxn+1):
 		allNG.append(outputNGram(txt,i));
 

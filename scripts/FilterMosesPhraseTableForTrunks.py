@@ -20,6 +20,9 @@ parser.add_option("-n", "--max-parts",dest="nfile",default=50,type="int",
 parser.add_option("-m", "--max-phrase-lenght",dest="mpl",default=10,type="int",
                         help="The max phrase length", metavar="NUM")
 
+parser.add_option("-c", "--coverage_file",dest="cvg",
+                        help="The coverage file", metavar="FILE")
+
 (options, args) = parser.parse_args()
 def qopen(fname,mode="r",level=5):
 	item = fname.split(".");
@@ -45,9 +48,15 @@ else:
 sents = [];
 
 for line in inp:
-	sents.append(tuple(line.strip().split()));
+	words = line.strip().split();
+	sents.append((tuple(words),[]));
+	for k in words:
+		sents[-1][1].append(0);
+	
+	
 
-setns = tuple(sents);
+sents = tuple(sents);
+
 
 phrases = [];
 
@@ -57,14 +66,14 @@ for i in range(0,options.mpl):
 phrases = tuple(phrases);
 
 for i in range(0,len(sents)):
-	words = sents[i];
+	words = sents[i][0];
 	for j in range(1,options.mpl+1):
 		for k in range(0,len(words)-j+1):
-			phrase = tuple(words[j:k]);
+			phrase = tuple(words[k:k+j]);
 			if phrases[j-1].has_key(phrase):
-				phrases[j-1][phrase].append(i);
+				phrases[j-1][phrase].append((i,k,k+j));
 			else:
-				phrases[j-1][phrase] = [i];
+				phrases[j-1][phrase] = [(i,k,k+j)];
 
 tfiles=[];
 sentPerFile = int(len(sents) / options.nfile);
@@ -85,11 +94,14 @@ i = 0;
 for pp in qopen(options.phrasetable,"r"):
 	sph = pp.split("|||");
 	phrs = tuple(sph[0].strip().split());
+	j = len(phrs);
 	if phrases[j-1].has_key(phrs):
 		lastfi = -1;
 		for entry in phrases[j-1][phrs]:
-			findex = int(entry / sentPerFile);
-			print findex,len(tfiles)
+			findex = int(entry[0] / sentPerFile);
+			for k in range(entry[1],entry[2]):
+				sents[entry[0]][1][k] = 1;
+			#print findex,len(tfiles)
 			if findex == lastfi:
 				continue
 			lastfi = findex;
@@ -103,6 +115,18 @@ for file in tfiles:
 	file[0].close();
 
 
+covfile = open(options.cvg,"w");
+
+for s in sents:
+	for i in range(0,len(s[1])):
+		if s[1][i] == 0:
+			covfile.write("__UNC_(%s)" % s[0][i]);
+		else:
+			covfile.write("%s" % s[0][i]);
+		if  i < len(s[1])-1:
+			covfile.write(" ");
+		else:
+			covfile.write("\n");
 
 
 
