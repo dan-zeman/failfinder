@@ -4,19 +4,19 @@ from sys import *
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-i", "--input", dest="input",default="-",
-                        help="The input corpus", metavar="FILE")
+                        help="The input tgt-side test set (i.e. the reference)", metavar="FILE")
 
 parser.add_option("-o", "--output", dest="output",default="output.",
                         help="The output file prefix", metavar="PREFIX")
 
 parser.add_option("-n", "--n-gram",dest="ng",default=8,type="int",
-                        help="The maximum ngrames", metavar="NUM")
+                        help="The maximum order of n-grams (the 'n')", metavar="NUM")
 
 parser.add_option("-p", "--prob",dest="prob",default=0.5,type="float",
-                        help="The probability for highest ngram", metavar="NUM")
+                        help="The probability for highest n-gram", metavar="NUM")
 
 parser.add_option("-s", "--split-prefix",dest="sprefix",default="sent.",
-                        help="The prefix for single sentence.", metavar="PREFIX")
+                        help="The prefix for all single-sentence files.", metavar="PREFIX")
 
 (options, args) = parser.parse_args()
 
