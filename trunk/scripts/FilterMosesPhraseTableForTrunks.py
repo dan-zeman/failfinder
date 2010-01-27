@@ -76,8 +76,8 @@ for i in range(0,len(sents)):
 				phrases[j-1][phrase] = [(i,k,k+j)];
 
 tfiles=[];
-sentPerFile = int(len(sents) / options.nfile);
-if len(sents) >= sentPerFile * options.nfile:
+sentPerFile = int(len(sents) / (options.nfile+1));
+if len(sents) > sentPerFile * options.nfile:
 	sentPerFile += 1;
 for i in range(0,options.nfile):
 	fname = options.output + "%05d-%05d.phrases" % (i*sentPerFile,(i+1)*sentPerFile-1);
