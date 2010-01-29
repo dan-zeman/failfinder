@@ -119,16 +119,18 @@ if(exists($index{$config{word}}))
         }
         print("   This is the sentence number $example->{line} in file $example->{file}.</p>\n");
         ###!!! We should read this from the index file.
+        my $path = '';
+        # my $path = 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\';
         my %files =
         (
-            'TRS' => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\train.en',
-            'TRT' => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\train.hi',
-            'TRA' => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\train.ali',
-            'S'   => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\test.en',
-            'R'   => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\test.hi',
-            'H'   => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\test.joshua.hi',
-            'RA'  => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\test.ali',
-            'HA'  => 'C:\Documents and Settings\Dan\Dokumenty\Lingvistika\Projekty\addicter\test.joshua.ali'
+            'TRS' => "${path}train.src",
+            'TRT' => "${path}train.tgt",
+            'TRA' => "${path}train.ali",
+            'S'   => "${path}test.src",
+            'R'   => "${path}test.tgt",
+            'H'   => "${path}test.system.tgt",
+            'RA'  => "${path}test.ali",
+            'HA'  => "${path}test.system.ali"
         );
         my $srcline = get_nth_line($files{$srcfile}, $sntno);
         my $tgtline = get_nth_line($files{$tgtfile}, $sntno);

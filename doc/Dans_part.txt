@@ -1,0 +1,64 @@
+Addicter
+Dan's part
+
+HTML-based browser of the data.
+First stage:
+- a vocabulary based on the training data (no playing with test data yet)
+- sortable alphabetically or frequency-based
+- for every word (source or target) browse all examples in parallel training data
+
+Workflow:
+First run an indexer, index training data by words.
+The browsing Perl CGI script loads the index file,
+then it reads the training data but does not store it in memory:
+it only needs to seek the position of the required sentence.
+
+It displays
+- meta-information such as the names of the files with the training corpus
+- the source sentence
+- the corresponding target sentence
+- highlights all occurrences of the searched word
+- provides links for the previous and the next example with the same word
+
+-----
+
+The indexer needs the following input files:
+- train.src ... source side of training corpus
+- train.tgt ... target side of training corpus
+- train.ali ... alignment of training corpus
+- test.src .... source side of test data
+- test.tgt .... reference translation of test data
+- test.ali .... alignment of the source and reference translation of test data
+- test.system.tgt ... system output for test data
+- test.system.ali ... alignment of the source and the system output for test data
+
+What should the index files contain? What do we need the index for?
+- quick lookup for any word
+- if the word is found:
+-- list of its occurrences
+-- for each occurrence:
+--- what file? (TRS training source, TRT target, S test source, R test reference translation, H system hypothesis)
+--- position in the file (line number, starting from 0)
+--- word or phrase to which it is aligned
+
+-----
+
+To do:
+- work with gzipped files
+- display word alignments
+- add test data (three or more sentences: source, target reference, target system(s))
+-- add test data tripart word alignments (requires running Giza++ with test data)
+- add phrase table
+- all words in the examples should be clickable to show their examples (starting at the current example?)
+- all translations of the current word based on alignments, sorted by frequency, for all of them their other counterparts...
+- transliteration anywhere (Hindi)
+
+-----
+
+Notes:
+How shall the index look like?
+word\tnumber number number ...
+	numbers are indices of sentences where the word occurs (starting at 0)
+One word per line.
+Lines could be sorted alphabetically for human viewing but it is not really necessary
+because Perl will read the index into a hash.
