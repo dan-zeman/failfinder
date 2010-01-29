@@ -80,12 +80,14 @@ if(exists($index{$config{word}}))
             if($config{exno}>0)
             {
                 my $prevexno = $config{exno}-1;
-                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=$prevexno'>previous</a>");
+                ###!!! all parameters should be preserved, not just filter
+                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=$prevexno&amp;filter=$config{filter}'>previous</a>");
             }
             if($config{exno}<$#examples)
             {
                 my $nextexno = $config{exno}+1;
-                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=$nextexno'>next</a>");
+                ###!!! all parameters should be preserved, not just filter
+                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=$nextexno&amp;filter=$config{filter}'>next</a>");
             }
         }
         else
@@ -93,7 +95,8 @@ if(exists($index{$config{word}}))
             $example = $examples[0];
             if($#examples>0)
             {
-                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=1>next</a>");
+                ###!!! all parameters should be preserved, not just filter
+                push(@links, "<a href='example.pl?word=$config{word}&amp;exno=1&amp;filter=$config{filter}'>next</a>");
             }
         }
         # So what do we need to read?
