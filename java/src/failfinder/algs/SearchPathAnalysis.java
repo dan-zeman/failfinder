@@ -5,5 +5,5 @@ import java.util.Set;
 
 public class SearchPathAnalysis {
 	public Set<Integer> errorSet;
-	public List<Integer> errorFronteir;
+	public List<Integer> errorFrontier;
 }
