@@ -1,4 +1,4 @@
-<html>
+<html http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8>
 <head>
 <style type="text/css">
 .barup {
@@ -22,15 +22,20 @@ border-bottom:0px;
 }
 
 .align {
-border: 1px solid black;
+/*border: 1px solid black;*/
 color: black;
 background-color: white;
 text-align: left;
-font-size: 24px;
+font-size: 14px;
 padding-right:1px;
 height: auto;
 margin-bottom:20px;
 display:bloc;
+}
+
+.al_row {
+height: 40px;
+/*border: 1px solid black;*/
 }
 
 .cell_on {
@@ -43,6 +48,149 @@ background-color:green;
 margin:5px;
 }
 
+.onlyA { background-color: red }
+.onlyB { background-color: green }
+.AandB { background-color: yellow }
+.src { color: black; padding: 5px; background-color: #eeeeee }
+.ref { color: black; padding: 5px; background-color: #cccccc }
+.tst1 { color: black; padding: 5px; background-color: #ccffcc }
+.tst2 { color: black; padding: 5px; background-color: #ffcccc }
+
+/* define height and width of scrollable area. Add 16px to width for scrollbar          */
+div.tableContainer {
+	clear: both;
+	border: 1px solid #963;
+	/*height: 285px;*/
+	height: 400px;
+	overflow: auto;
+	/*width: 756px*/
+	width: auto;
+}
+ 
+/* Reset overflow value to hidden for all non-IE browsers. */
+html>body div.tableContainer {
+	overflow: hidden;
+	/*width: 756px*/
+	width: auto;
+}
+ 
+/* define width of table. IE browsers only                 */
+div.tableContainer table {
+	float: left;
+	width: 740px
+}
+ 
+/* define width of table. Add 16px to width for scrollbar.           */
+/* All other non-IE browsers.                                        */
+html>body div.tableContainer table {
+	width: 756px
+}
+ 
+/* set table header to a fixed position. WinIE 6.x only                                       */
+/* In WinIE 6.x, any element with a position property set to relative and is a child of       */
+/* an element that has an overflow property set, the relative value translates into fixed.    */
+/* Ex: parent element DIV with a class of tableContainer has an overflow property set to auto */
+thead.fixedHeader tr {
+	position: relative
+}
+ 
+/* set THEAD element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+html>body thead.fixedHeader tr {
+	display: block
+}
+ 
+/* make the TH elements pretty */
+thead.fixedHeader th {
+	background: #C96;
+	border-left: 1px solid #EB8;
+	border-right: 1px solid #B74;
+	border-top: 1px solid #EB8;
+	font-weight: normal;
+	padding: 4px 3px;
+	text-align: left
+}
+ 
+/* make the A elements pretty. makes for nice clickable headers                */
+thead.fixedHeader a, thead.fixedHeader a:link, thead.fixedHeader a:visited {
+	color: #FFF;
+	display: block;
+	text-decoration: none;
+	width: 100%
+}
+ 
+/* make the A elements pretty. makes for nice clickable headers                */
+/* WARNING: swapping the background on hover may cause problems in WinIE 6.x   */
+thead.fixedHeader a:hover {
+	color: #FFF;
+	display: block;
+	text-decoration: underline;
+	width: 100%
+}
+ 
+/* define the table content to be scrollable                                              */
+/* set TBODY element to have block level attributes. All other non-IE browsers            */
+/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
+/* induced side effect is that child TDs no longer accept width: auto                     */
+html>body tbody.scrollContent {
+	display: block;
+	/*height: 262px;*/
+	height: 400px;
+	overflow: auto;
+	width: 100%;
+}
+ 
+/* make TD elements pretty. Provide alternating classes for striping the table */
+/* http://www.alistapart.com/articles/zebratables/                             */
+tbody.scrollContent td, tbody.scrollContent tr.normalRow td {
+	background: #FFF;
+	border-bottom: none;
+	border-left: none;
+	border-right: 1px solid #CCC;
+	border-top: 1px solid #DDD;
+	padding: 2px 3px 3px 4px
+}
+ 
+tbody.scrollContent tr.alternateRow td {
+	background: #EEE;
+	border-bottom: none;
+	border-left: none;
+	border-right: 1px solid #CCC;
+	border-top: 1px solid #DDD;
+	padding: 2px 3px 3px 4px
+}
+ 
+/* define width of TH elements: 1st, 2nd, and 3rd respectively.          */
+/* Add 16px to last TH for scrollbar padding. All other non-IE browsers. */
+/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
+html>body thead.fixedHeader th {
+	width: 300px;
+}
+ /*
+html>body thead.fixedHeader th + th {
+	width: 240px;
+}
+ 
+html>body thead.fixedHeader th + th + th {
+	width: 316px;
+}*/
+ 
+/* define width of TD elements: 1st, 2nd, and 3rd respectively.          */
+/* All other non-IE browsers.                                            */
+/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
+html>body tbody.scrollContent td {
+	width: 200px
+}
+ 
+html>body tbody.scrollContent td + td {
+	width: 240px
+}
+ 
+html>body tbody.scrollContent td + td + td {
+	width: 300px
+}
+
+
 
 </style>
 
@@ -52,19 +200,6 @@ margin:5px;
 
 <script language="javascript">
 
-var errors_names = Array("SEARCH","REACH", "MODEL","SRC", "KEYBOARD-TO-CHAIR");
-var errors = Array(1,0,1,1,1);
-var errors2 = Array(0,1,0,0,0);
-
-/*function dhtmlLoadScript(url)
-{
-	var url = "data.js";
-	var e = document.createElement("script");
-	e.src = url;
-	e.type="text/javascript";
-	document.getElementsByTagName("head")[0].appendChild(e); 
-}
-*/
 function findElement(e) {
     var theTarget = e.target;
     if( theTarget && ( e.target.nodeType == 3 || e.target.nodeType == 4 ) ) {
@@ -97,7 +232,7 @@ function build(measure, target, s) {
     var is_first = 1;
     for(var i = 0; i < values.length; i++) 
     {
-        var width = 30 + 140 * (values[i][measure] - min) / (max - min);
+        var width = 20 + 120 * (values[i][measure] - min) / (max - min);
         var element = document.createElement("div");
         
         if(s >= 0)
@@ -113,8 +248,11 @@ function build(measure, target, s) {
         element.style.width = Math.floor(width) + "px";
         element.setAttribute('system', values[i][0]);
         
-		if(i%2 == 0) element.setAttribute('errors', errors);
-		else element.setAttribute('errors', errors2);
+		element.setAttribute('errors', errors[i]);
+		element.setAttribute('src', alignments[i][0]);
+		element.setAttribute('ref', alignments[i][1]);
+		element.setAttribute('tst1', alignments[i][2]);
+		element.setAttribute('tst', alignments[i][3]);
 		
         element.onmouseout = function(e) 
         {
@@ -129,24 +267,10 @@ function build(measure, target, s) {
                     matches[j].style.background = matches[j].getAttribute('old_color');
                 }
             }
-            
-            /*var err = document.getElementById('errors');
-            for(var i=0; i<err.children.length; i++)
-            {
-            	if(el.getAttribute('errors')[i] == 0)
-            	{
-            		err.children[i].setAttribute('class', 'cell_off');
-            	}
-            	else
-            	{
-            		err.children[i].setAttribute('class', 'cell_on');
-            	}
-            }*/
-            
         };
         element.onmouseover = function(e) 
         { 
-	        console.debug('onmouseover');
+	        //console.debug('onmouseover');
         	var el = findElement(e);
             var matches = document.getElementsByTagName('div');
             var sysid = el.getAttribute('system');
@@ -171,6 +295,35 @@ function build(measure, target, s) {
             		err.children[i].setAttribute('class', 'cell_on');
             	}
             }
+            
+            var align = document.getElementById('alignment');
+            while(align.children.length > 0) align.removeChild(align.lastChild);
+            
+            var al = el.getAttribute('src');
+            var al_el = document.createElement("div");
+            al_el.setAttribute('class', 'al_row');
+            //al_el.appendChild(document.createTextNode("SRC : "+al));
+            al_el.innerHTML = "SRC : "+al;
+            align.appendChild(al_el);
+            
+            align.appendChild(document.createElement('br'));
+            
+            al = el.getAttribute('ref');
+            al_el = document.createElement("div");
+            al_el.setAttribute('class', 'al_row');
+            //al_el.appendChild(document.createTextNode("REF : "+al));
+            al_el.innerHTML = "REF : "+al;
+            align.appendChild(al_el);
+            
+            align.appendChild(document.createElement('br'));
+            
+            al = el.getAttribute('tst1');
+            al_el = document.createElement("div");
+            al_el.setAttribute('class', 'al_row');
+            //al_el.appendChild(document.createTextNode("HYP : "+al));
+            al_el.innerHTML = "HYP : "+al;
+            align.appendChild(al_el);
+            
             
         };
         if(is_first == 1 && s >= 0) 
@@ -243,15 +396,19 @@ function make_checkboxes()
 
 function make_table()
 {
+	document.write('<div id="tableContainer" class="tableContainer">');
 	document.write('<table border="0">');
+	document.write('<thead class="fixedHeader" id="headers">');
 	document.write('<tr id="headers">');
 	for(var i = 0; i < header[0].length; i++)
 	{
 		var name = header[0][i];
-		document.write("<td id='h"+name+"' >"+name+"</td>");
+		//document.write("<td id='h"+name+"' >"+name+"</td>");
+		document.write("<th id='h"+name+"' >"+name+"</th>");
 	}
  	document.write('</tr>');
-
+	document.write('</thead>'); 
+	document.write('<tbody class="scrollContent">');
  	document.write('<tr id="data">');	
 	for(var i = 0; i < header[0].length; i++)
 	{
@@ -259,44 +416,34 @@ function make_table()
 		document.write("<td id='"+name+"' ></td>");
 	}
 	document.write('</tr>');
+	document.write('</tbody>');
  	document.write('</table>');
-}
-
-function show(type)
-{
-	if(type == "REF")
-	{
-		document.write("This is a wonderful reference , you can not beat it");
-	}
-	else if(type == "ORA")
-	{
-		document.write("This is a wonderful oracle , try to beat me");
-	}
-	else if(type == "HYP")
-	{
-		document.write("This is a poor hypothesis , I am too bad");
-	}
-	else{ return; }
+ 	document.write('</div>');
 }
 
 function make_alignment_div()
 {
-	document.write('<div class="align">');
-	document.write('REF : ');
-	show("REF");
-	document.write('<br/>');
-	document.write('ORA : ');
-	show("ORA");
-	document.write('<br/>');
-	document.write('HYP : ');
-	show("HYP");
-	document.write("</div>");
+	document.write('<div class="align" id="alignment">');
+	
+	
+	document.write('<div class="al_row">SRC : Can you translate that for me, please ?');
+	
+	document.write('</div><br/><div class="al_row">');
+	document.write('REF : This is a wonderful reference , you can not beat it');
+	
+	//document.write('</div><br/><div class="al_row">');
+	//document.write('ORA : This is a wonderful oracle , try to beat me');
+	
+	document.write('</div><br/><div class="al_row">');
+	document.write('HYP : This is a poor hypothesis , I am too bad');
+	
+	document.write("</div></div>");
 }
 
 function make_errors_div()
 {
 	document.write('<div class="align" id="errors">ERRORS : ');
-	for(var i=0; i<errors.length; i++)
+	for(var i=0; i<errors_names.length; i++)
 	{
 		if(errors[i]) document.write('<span class="cell_on">'+errors_names[i]+'</span>');
 		else document.write('<span class="cell_off">'+errors_names[i]+'</span>');
