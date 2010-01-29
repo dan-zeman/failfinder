@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import failfinder.data.CDecReader;
+import failfinder.data.Hypothesis;
 import failfinder.data.NBestList;
 
 public class ErrorCategorizer {
@@ -23,7 +24,7 @@ public class ErrorCategorizer {
 		System.out.println("Search Error: " + cat.searchError);
 		System.out.println("Model Error: " + cat.modelError);
 	}
-	
+
 	public ErrorCategory categorize(int i, String desired, NBestList forced, NBestList vanilla) {
 		ErrorCategory cat = new ErrorCategory();
 		cat.reachable = hasReachabilityError(desired, forced);
@@ -52,26 +53,48 @@ public class ErrorCategorizer {
 		}
 	}
 
+	// was there model error WITH REGARD TO THE DESIRED HYPOTHESIS AND THE
+	// BIASED PORTION
+	// OF THE SEARCH SPACE REPRESENTED BY THE N-BEST LIST
 	public Tristate hasModelError(String desired, NBestList forced, NBestList vanilla) {
 		if (isReachable(desired, forced) == false) {
 			return Tristate.UNKNOWN;
 		} else {
 
-			float forcedScore = forced.getBestScoreFor(desired);
-			float vanillaScore = vanilla.getBestScoreFor(desired);
-			float scoreOfDesired = Math.max(forcedScore, vanillaScore);
-			float topbestScore = vanilla.getBestScore();
-
-			// log probs, not costs
-			// cannot be tied for top -- this actually constitutes a model
-			// error, too
-			// strictly greater than!
-			boolean isTop = (scoreOfDesired > topbestScore);
-
-			if (isTop) {
+			Hypothesis best = vanilla.getBest();
+			if (best != null && best.yield.equals(desired)) {
+				// desired was the best in the n-best list means instant success
+				// TODO: was it the same as the 2nd best?
 				return Tristate.FALSE;
 			} else {
-				return Tristate.TRUE;
+
+				// was not in the n-best list, was it in the force decode?
+				float forcedScore = forced.getBestScoreFor(desired);
+				float vanillaScore = vanilla.getBestScoreFor(desired);
+
+				// calculate with regard to n-best list, so we don't have to
+				// check this
+				// if (vanillaScore == Float.NEGATIVE_INFINITY) {
+				// // hypothesis was not in vanilla
+				// // if we're
+				// return Tristate.UNKNOWN;
+				// }
+
+				float desiredScore = Math.max(forcedScore, vanillaScore);
+				float topbestScore = vanilla.getBestScore();
+
+				// log probs, not costs
+				// cannot be tied for top -- this actually constitutes a
+				// model
+				// error, too
+				// strictly greater than!
+				boolean isTop = (desiredScore > topbestScore);
+
+				if (isTop) {
+					return Tristate.FALSE;
+				} else {
+					return Tristate.TRUE;
+				}
 			}
 		}
 	}
