@@ -1,5 +1,6 @@
 package failfinder.algs;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,16 +13,33 @@ import failfinder.data.SearchPath;
 
 public class SearchPathAnalyzer {
 
+	public void printAnalysis(int i, SearchPath forced, SearchPath vanilla) {
+		SearchPathAnalysis analysis = analyze(forced, vanilla);
+		System.out.println("Sentence: " + i);
+		System.out.println("Error Frontier:");
+		for (Integer id : analysis.errorFrontier) {
+			PartialHypothesis hyp = forced.getVertex(id);
+			System.out.println("\t" + hyp.toString());
+		}
+		System.out.println("Non-frontier Errors:");
+		for (Integer id : analysis.errorSet) {
+			if (!analysis.errorFrontier.contains(id)) {
+				PartialHypothesis hyp = forced.getVertex(id);
+				System.out.println("\t" + hyp.toString());
+			}
+		}
+	}
+
 	// forced should be the smaller space for efficiency
-	public SearchPathAnalysis align(SearchPath forced, SearchPath vanilla) {
+	public SearchPathAnalysis analyze(SearchPath forced, SearchPath vanilla) {
 
 		makeForwardPointers(forced);
 		makeForwardPointers(vanilla);
 		Map<PartialHypothesis, PartialHypothesis> f2v = match(forced, vanilla);
-		
+
 		SearchPathAnalysis spa = new SearchPathAnalysis();
 		spa.errorSet = findErrorSet(forced, vanilla, f2v);
-		spa.errorFronteir = findErrorFronteir(forced, vanilla, f2v, spa.errorSet);
+		spa.errorFrontier = findErrorFrontier(forced, vanilla, f2v, spa.errorSet);
 		return spa;
 	}
 
@@ -79,18 +97,43 @@ public class SearchPathAnalyzer {
 	}
 
 	// WARNING: We rely on the partial hypotheses being in search order
-	private List<Integer> findErrorFronteir(SearchPath forced, SearchPath vanilla,
+	private List<Integer> findErrorFrontier(SearchPath forced, SearchPath vanilla,
 			Map<PartialHypothesis, PartialHypothesis> f2v, Set<Integer> errorSet) {
 
-		List<Integer> errorFronteir = new ArrayList<Integer>();
+		List<Integer> errorFrontier = new ArrayList<Integer>();
 
 		for (PartialHypothesis forcedHyp : forced.searchVertices) {
 			PartialHypothesis vanillaHyp = f2v.get(forcedHyp);
-			if (vanillaHyp == null && errorFronteir.contains(forcedHyp.searchVertexId)) {
-				errorFronteir.add(forcedHyp.searchVertexId);
+			if (vanillaHyp == null) {
+				boolean isFronteir = true;
+				// TODO: traverse the graph properly instead of redoing work here
+				for (int ant : forcedHyp.antecedents) {
+					if(errorFrontier.contains(ant)) {
+						isFronteir = false;
+					}
+				}
+				if (isFronteir) {
+					errorFrontier.add(forcedHyp.searchVertexId);
+				}
 			}
 		}
 
-		return errorFronteir;
+		return errorFrontier;
+	}
+
+	public static void main(String[] args) throws Exception {
+		if (args.length != 2) {
+			System.err.println("Usage: program forcedSearchPath vanillaSearchPath");
+			System.exit(1);
+		}
+
+		List<SearchPath> vanilla = SearchPath.read(new File(args[0]));
+		List<SearchPath> forced = SearchPath.read(new File(args[1]));
+		// TODO: Populate lists iteratively
+
+		SearchPathAnalyzer aFunk = new SearchPathAnalyzer();
+		for (int i = 0; i < vanilla.size(); i++) {
+			aFunk.printAnalysis(i, forced.get(i), vanilla.get(i));
+		}
 	}
 }

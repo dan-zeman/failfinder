@@ -19,7 +19,6 @@ public class CDecReader {
 		int prevId = 0;
 		while ((line = in.readLine()) != null) {
 			Scanner barScan = new Scanner(line).useDelimiter(" ||| ");
-			Hypothesis hyp = new Hypothesis();
 
 			int sentId = barScan.nextInt();
 			if(sentId != prevId) {
@@ -28,6 +27,8 @@ public class CDecReader {
 				allNbest.add(nbest);
 				hyps = new ArrayList<Hypothesis>();
 			}
+			
+			Hypothesis hyp = new Hypothesis();
 			hyp.yield = barScan.next();
 			hyp.feats = PartialHypothesis.tokenizeFloats(barScan.next(), ";");
 			hyp.total = barScan.nextFloat();

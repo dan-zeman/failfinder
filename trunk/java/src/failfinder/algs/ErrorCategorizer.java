@@ -92,7 +92,7 @@ public class ErrorCategorizer {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length != 1) {
+		if (args.length != 3) {
 			System.err.println("Usage: program vanillaNbest forcedNbest desiredList");
 			System.exit(1);
 		}
