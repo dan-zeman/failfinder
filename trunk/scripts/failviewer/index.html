@@ -34,12 +34,13 @@ display:bloc;
 }
 
 .cell_on {
-
 background-color: red;
+margin:5px;
 }
 
 .cell_off {
-background-color:white;
+background-color:green;
+margin:5px;
 }
 
 
@@ -51,7 +52,7 @@ background-color:white;
 
 <script language="javascript">
 
-var errors_names = Array("SEARCH","REACH", "LM","TM","SRC");
+var errors_names = Array("SEARCH","REACH", "MODEL","SRC", "KEYBOARD-TO-CHAIR");
 var errors = Array(1,0,1,1,1);
 var errors2 = Array(0,1,0,0,0);
 
@@ -117,8 +118,10 @@ function build(measure, target, s) {
 		
         element.onmouseout = function(e) 
         {
+        	//console.debug('onmouseout');
+        	var el = findElement(e);
             var matches = document.getElementsByTagName('div');
-            var sysid = findElement(e).getAttribute('system');
+            var sysid = el.getAttribute('system');
             for(var j = 0; j < matches.length; j++) 
             {
                 if(matches[j].getAttribute('system') == sysid) 
@@ -127,19 +130,26 @@ function build(measure, target, s) {
                 }
             }
             
-            var err = document.getElementById('errors');
+            /*var err = document.getElementById('errors');
             for(var i=0; i<err.children.length; i++)
             {
-            	//err.children[i].setAttribute('', '');
-            	err.children[i].class = '.cell_off';
-            }
+            	if(el.getAttribute('errors')[i] == 0)
+            	{
+            		err.children[i].setAttribute('class', 'cell_off');
+            	}
+            	else
+            	{
+            		err.children[i].setAttribute('class', 'cell_on');
+            	}
+            }*/
             
         };
         element.onmouseover = function(e) 
         { 
+	        console.debug('onmouseover');
         	var el = findElement(e);
             var matches = document.getElementsByTagName('div');
-            var sysid = findElement(e).getAttribute('system');
+            var sysid = el.getAttribute('system');
             for(var j = 0; j < matches.length; j++) 
             {
                 if(matches[j].getAttribute('system') == sysid) 
@@ -290,8 +300,6 @@ function make_errors_div()
 	{
 		if(errors[i]) document.write('<span class="cell_on">'+errors_names[i]+'</span>');
 		else document.write('<span class="cell_off">'+errors_names[i]+'</span>');
-	
-		document.write('<span>  </span>');
 	}
 	document.write("</div>");
 }
