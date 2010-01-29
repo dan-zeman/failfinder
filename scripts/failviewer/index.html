@@ -39,18 +39,18 @@ height: 40px;
 }
 
 .cell_on {
-background-color: red;
+background-color: #ff9300;
 margin:5px;
 }
 
 .cell_off {
-background-color:green;
+background-color: #16ff3b;
 margin:5px;
 }
 
-.onlyA { background-color: red }
-.onlyB { background-color: green }
-.AandB { background-color: yellow }
+.onlyA { background-color: #14a1ee }
+.onlyB { background-color: #17ff6d }
+.AandB { background-color: #ffff5b }
 .src { color: black; padding: 5px; background-color: #eeeeee }
 .ref { color: black; padding: 5px; background-color: #cccccc }
 .tst1 { color: black; padding: 5px; background-color: #ccffcc }
@@ -108,7 +108,7 @@ thead.fixedHeader th {
 	border-top: 1px solid #EB8;
 	font-weight: normal;
 	padding: 4px 3px;
-	text-align: left
+	text-align: left;
 }
  
 /* make the A elements pretty. makes for nice clickable headers                */
@@ -164,16 +164,16 @@ tbody.scrollContent tr.alternateRow td {
 /* Add 16px to last TH for scrollbar padding. All other non-IE browsers. */
 /* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
 html>body thead.fixedHeader th {
-	width: 300px;
+	width: 80px;
 }
- /*
+ 
 html>body thead.fixedHeader th + th {
-	width: 240px;
+	width: 270px;
 }
  
 html>body thead.fixedHeader th + th + th {
-	width: 316px;
-}*/
+	width: 330px;
+}
  
 /* define width of TD elements: 1st, 2nd, and 3rd respectively.          */
 /* All other non-IE browsers.                                            */
@@ -252,7 +252,7 @@ function build(measure, target, s) {
 		element.setAttribute('src', alignments[i][0]);
 		element.setAttribute('ref', alignments[i][1]);
 		element.setAttribute('tst1', alignments[i][2]);
-		element.setAttribute('tst', alignments[i][3]);
+		element.setAttribute('tst2', alignments[i][3]);
 		
         element.onmouseout = function(e) 
         {
@@ -320,10 +320,18 @@ function build(measure, target, s) {
             al = el.getAttribute('tst1');
             al_el = document.createElement("div");
             al_el.setAttribute('class', 'al_row');
-            //al_el.appendChild(document.createTextNode("HYP : "+al));
-            al_el.innerHTML = "HYP : "+al;
+            //al_el.appendChild(document.createTextNode("HYP1 : "+al));
+            al_el.innerHTML = "HYP1 : "+al;
             align.appendChild(al_el);
+           
+            align.appendChild(document.createElement('br'));
             
+            al = el.getAttribute('tst2');
+            al_el = document.createElement("div");
+            al_el.setAttribute('class', 'al_row');
+            //al_el.appendChild(document.createTextNode("HYP2 : "+al));
+            al_el.innerHTML = "HYP2 : "+al;
+            align.appendChild(al_el); 
             
         };
         if(is_first == 1 && s >= 0) 
@@ -435,7 +443,10 @@ function make_alignment_div()
 	//document.write('ORA : This is a wonderful oracle , try to beat me');
 	
 	document.write('</div><br/><div class="al_row">');
-	document.write('HYP : This is a poor hypothesis , I am too bad');
+	document.write('HYP1 : This is my previous hypothesis , I am too bad');
+	
+	document.write('</div><br/><div class="al_row">');
+	document.write('HYP2 : This is a bettert hypothesis , great !!');
 	
 	document.write("</div></div>");
 }
