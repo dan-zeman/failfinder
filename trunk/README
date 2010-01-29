@@ -11,6 +11,10 @@ David Marecek
 Martin Popel
 Dan Zeman
 
+STARTING POINT
+
+We don't like the outputs of our MT systems.
+
 QUESTIONS
 
 1) What don't we like?
@@ -21,6 +25,7 @@ QUESTIONS
 	- In the context of a system vs references, it's harder to say.
 
 3) Why are my translations bad?
+	- What are the limits of my training data? (OOV on source and target side and on phrase-tables)
 	- What better translation could my system have given? (Oracle decoding)
 	- Why didn't my system translate this sentence as X? (Forced decoding + error categorization)
 	- Where did it all go wrong? (Search path comparison)
