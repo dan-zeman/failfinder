@@ -31,7 +31,7 @@ public class CDecReader {
 
 				Hypothesis hyp = new Hypothesis();
 				hyp.yield = barScan.next();
-				hyp.feats = PartialHypothesis.tokenizeFeats(barScan.next(), ";");
+				PartialHypothesis.tokenizeFeats(barScan.next(), hyp);
 				hyp.total = barScan.nextFloat();
 				hyps.add(hyp);
 			} catch (InputMismatchException e) {

@@ -16,6 +16,13 @@ public class SearchPathAnalyzer {
 	public void printAnalysis(int i, SearchPath forced, SearchPath vanilla) {
 		SearchPathAnalysis analysis = analyze(forced, vanilla);
 		System.out.println("Sentence: " + i);
+		
+		System.out.println("Forced Search Vertices: " + forced.searchVertices.size());
+		System.out.println("Vanilla Search Vertices: " + vanilla.searchVertices.size());
+		System.out.println("Aligned Search Vertices: " + analysis.f2vAlignment.size());
+		System.out.println("All Error Vertices: " + analysis.errorSet.size());
+		System.out.println("Frontier Error Vertices: " + analysis.errorFrontier.size());
+		
 		System.out.println("Error Frontier:");
 		for (Integer id : analysis.errorFrontier) {
 			PartialHypothesis hyp = forced.getVertex(id);
@@ -35,11 +42,11 @@ public class SearchPathAnalyzer {
 
 		makeForwardPointers(forced);
 		makeForwardPointers(vanilla);
-		Map<PartialHypothesis, PartialHypothesis> f2v = match(forced, vanilla);
 
 		SearchPathAnalysis spa = new SearchPathAnalysis();
-		spa.errorSet = findErrorSet(forced, vanilla, f2v);
-		spa.errorFrontier = findErrorFrontier(forced, vanilla, f2v, spa.errorSet);
+		spa.f2vAlignment = match(forced, vanilla);
+		spa.errorSet = findErrorSet(forced, vanilla, spa.f2vAlignment);
+		spa.errorFrontier = findErrorFrontier(forced, vanilla, spa.f2vAlignment, spa.errorSet);
 		return spa;
 	}
 
@@ -106,9 +113,10 @@ public class SearchPathAnalyzer {
 			PartialHypothesis vanillaHyp = f2v.get(forcedHyp);
 			if (vanillaHyp == null) {
 				boolean isFronteir = true;
-				// TODO: traverse the graph properly instead of redoing work here
+				// TODO: traverse the graph properly instead of redoing work
+				// here
 				for (int ant : forcedHyp.antecedents) {
-					if(errorFrontier.contains(ant)) {
+					if (errorFrontier.contains(ant)) {
 						isFronteir = false;
 					}
 				}
@@ -127,7 +135,9 @@ public class SearchPathAnalyzer {
 			System.exit(1);
 		}
 
+		System.err.println("Reading vanilla search paths...");
 		List<SearchPath> vanilla = SearchPath.read(new File(args[0]));
+		System.err.println("Reading forced search paths...");
 		List<SearchPath> forced = SearchPath.read(new File(args[1]));
 		// TODO: Populate lists iteratively
 
