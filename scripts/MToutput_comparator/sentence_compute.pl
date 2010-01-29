@@ -25,12 +25,16 @@ sub matching_ngrams {
     }
 
     my @ngrams;
-    my $count = 0;
+    my @ngram_count = (0, 0, 0, 0);
+    my %counted;
     for ( my $j = 0; $j < @$sent2; $j++ ) {
         foreach my $i ( @{$tok2pos{$$sent2[$j]}} ) {
             my $n = 0;
             while ( ($i + $n < @$sent1) && ($j + $n < @$sent2) && ($$sent1[$i + $n] eq $$sent2[$j + $n]) ) {
-                $count++ if $n < 4;
+                if ( $n < 4 && !$counted{"$j $n"} ) {
+                    $counted{"$j $n"} = 1;
+                    $ngram_count[$n]++ if $n < 4 ;
+                }
                 if ( !defined $ngrams[$n]) {
                     $ngrams[$n] = [[$i, $j]];
                 }
@@ -59,7 +63,7 @@ sub matching_ngrams {
         }
         $n--;
     }
-    return (\@brackets1, \@brackets2, $count);
+    return (\@brackets1, \@brackets2, \@ngram_count);
 }
 
 while (<>) {
@@ -93,6 +97,10 @@ while (<>) {
         $tst2[$brackets->[1]] .= '}}}';
     }
 
-    print "$info diff=".($count1-$count2)."\t$src\t".join( " ", @ref )."\t".join( " ", @tst1 )."\t".join(" ",@tst2)."\n";
+    my $diff = 0;
+    foreach my $c (@$count1) { $diff += $c; }
+    foreach my $c (@$count2) { $diff -= $c; }
+
+    print "$info ngc1=[".join(",",@$count1)."] ngc2=[".join(",",@$count2)."] diff=$diff\t$src\t".join( " ", @ref )."\t".join( " ", @tst1 )."\t".join(" ",@tst2)."\n";
 }
 

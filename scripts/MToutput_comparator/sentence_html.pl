@@ -14,13 +14,15 @@ print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">
 <head>
 
 <style>
-.onlyA { background-color: red }
-.onlyB { background-color: green }
-.AandB { background-color: yellow }
+.onlyA { background-color: #ff8888 }
+.onlyB { background-color: #8888ff }
+.AandB { background-color: #bb55bb }
+.info { padding: 0px; font-size: 10pt; font-weight: bold; color: #550055 }
 .src { color: black; padding: 5px; background-color: #eeeeee }
-.ref { color: black; padding: 5px; background-color: #cccccc }
-.tst1 { color: black; padding: 5px; background-color: #ccffcc }
+.ref { color: black; padding: 5px; background-color: #ddaadd }
+.tst1 { color: black; padding: 5px; background-color: #ccccff }
 .tst2 { color: black; padding: 5px; background-color: #ffcccc }
+h6 { font-size: 10pt; margin: 1px }
 </style>
 
 <script language=javascript>
@@ -71,21 +73,20 @@ function change_style(cb,cl) {
 </head>
 <body>
 
-<p>
-SRC: <input type=\"checkbox\" checked onclick=\"change_style(this,'.src')\">
-REF: <input type=\"checkbox\" checked onclick=\"change_style(this,'.ref')\">
-TST1: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst1')\">
-TST2: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst2')\">
-
+<p align='center'>
+show SRC: <input type=\"checkbox\" checked onclick=\"change_style(this,'.src')\">\&nbsp;\&nbsp;
+show REF: <input type=\"checkbox\" checked onclick=\"change_style(this,'.ref')\">\&nbsp;\&nbsp;
+show TST1: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst1')\">\&nbsp;\&nbsp;
+show TST2: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst2')\">
 </p>
 ";
 
 my ($src_name, $ref_name, $tst1_name, $tst2_name ) = qw(SRC REF TST1 TST2);
 
+
 while (<>) {
 
     chomp;
-
     if ( $_ =~ /^\#/ ) {
         $tst1_name = $1 if ( $_ =~ /test1=([^\s]+)/ );
         $tst2_name = $1 if ( $_ =~ /test2=([^\s]+)/ );
@@ -93,13 +94,35 @@ while (<>) {
     }
 
     my ( $info, $src, $ref, $tst1, $tst2 ) = split ( /\t/, $_ );
-    print "<p>\n";
-    print "    <i>$info</i>\n";
-    print "    <div class='src'><b>SRC:</b> $src</div>\n";
-    print "    <div class='ref'><b>REF:</b> " . print_sentence($ref) . "<br></div>\n";
-    print "    <div class='tst1'><b>$tst1_name:</b> " . print_sentence($tst1) . "<br></div>\n";
-    print "    <div class='tst2'><b>$tst2_name:</b> " . print_sentence($tst2) . "<br></div>\n";
-    print "</p>\n";
+
+    my @ngc1 = ( $info =~ /ngc1=\[([\d,]+)\]/ ) ? split (",", $1) : (0, 0, 0, 0);
+    my @ngc2 = ( $info =~ /ngc2=\[([\d,]+)\]/ ) ? split (",", $1) : (0, 0, 0, 0);
+    my $id = ( $info =~ /id=([^\s]+)/ ) ? $1 : '?';
+    my $diff = ( $info =~ /diff=([^\s]+)/ ) ? $1 : '?';
+
+print "
+<p>
+    <div class='info'>ID: $id\&nbsp;\&nbsp;\&nbsp; Difference in matching: $diff</div>
+    <div class='src'><h6>SRC:</h6> $src</div>
+    <div class='ref'><h6>REF:</h6> ".print_sentence($ref)."<br></div>
+    <div class='tst1'><h6>
+        $tst1_name\&nbsp;\&nbsp;\&nbsp;
+        1-grams: $ngc1[0],\&nbsp;\&nbsp;\&nbsp;
+        2-grams: $ngc1[1],\&nbsp;\&nbsp;\&nbsp;
+        3-grams: $ngc1[2],\&nbsp;\&nbsp;\&nbsp;
+        4-grams: $ngc1[3]</h6>
+        ".print_sentence($tst1)."
+    </div>
+    <div class='tst2'><h6>
+        $tst2_name\&nbsp;\&nbsp;\&nbsp;
+        1-grams: $ngc2[0],\&nbsp;\&nbsp;\&nbsp;
+        2-grams: $ngc2[1],\&nbsp;\&nbsp;\&nbsp;
+        3-grams: $ngc2[2],\&nbsp;\&nbsp;\&nbsp;
+        4-grams: $ngc2[3]</h6>
+        ". print_sentence($tst2)."
+    </div>
+</p>
+";
 }
 
 print "</body>\n</html>\n";
