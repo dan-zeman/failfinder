@@ -1,0 +1,38 @@
+Co-proposed by Ondřej Bojar and Dan Zeman.
+
+The goal is to develop a tool or set of tools to ease error analysis. We will focus on work with Moses and Joshua; however, a modular approach should be taken so that as much as possible can be re-used with other translation systems.
+
+Error detection part should work with both training and test(devel) data, phrase tables, alignment files etc.
+
+Visualization part should provide maximal comfort for examination of errors: concentration of various data sources at one place and their cross-linking. The possibility to generate HTML files looks quite appealing here.
+
+Some tips what to include:
+- OOV rate (occurrences/types in training/test data, source/target language)
+- named entity recognition and errors around them (if NER tool is available)
+- tri-alignment ref-src-sys
+- lemmatized evaluation: for what words the system picked correct lemma but wrong word form?
+- matching words (system vs. reference translation) after dropping stopwords
+- similar word detection (typos, alternate transcription of loanwords)
+- phrase table comparison, glosses: have we translated a phrase using unsuitable alternative?
+- wrongly omitted words and phrases
+- per-sentence BLEU
+- word-order (ref vs. sys)
+- tree comparison if parsers available
+
+- Search error types
+- Quantify importance, sort
+- Graphical output
+- If an error type is well defined, count its occurrences
+- Possibility to click on a word or phrase and get its occurrences with context
+-- in phrase table
+-- in training data (both sides aligned)
+-- in language model training data (if this is target language)
+-- in n-best-translations list
+-- other translations of this phrase elsewhere in test data
+- All searches can be optionally done lemmatized => we will see when we are not getting the target morphology right. Of course, we will need a lemmatizer.
+
+- Visualization:
+-- Any text in any language may have:
+--- transliteration (if non-Latin alphabet)
+--- glosses (even in a third language)
+--- be written right-to-left

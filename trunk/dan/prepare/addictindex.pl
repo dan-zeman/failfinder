@@ -45,11 +45,11 @@ if($trspath eq '' || $trtpath eq '' || $trapath eq '' || $spath eq '' || $rpath 
 }
 # Build index.
 print STDERR ("Reading the training corpus...\n");
-index_corpus('training', $trspath, $trtpath, $trapath, \%index);
+index_corpus('training', $trspath, $trtpath, $trapath, \%index, $opath);
 print STDERR ("Reading the reference test data...\n");
-index_corpus('test', $spath, $rpath, $rapath, \%index);
+index_corpus('test', $spath, $rpath, $rapath, \%index, $opath);
 print STDERR ("Reading the system output...\n");
-index_corpus('test.system', $spath, $hpath, $hapath, \%index);
+index_corpus('test.system', $spath, $hpath, $hapath, \%index, $opath);
 # To speed up reading the index, do not save it in one huge file.
 # Instead, split it up according to the first letters of the words.
 # Collect the first characters of the indexed words.
@@ -102,25 +102,38 @@ sub index_corpus
     my $tpath = shift;
     my $apath = shift;
     my $index = shift; # Reference to the index hash.
+    my $opath = shift; # Output path to copy the input files to.
     my ($sid, $tid);
     if($corptype eq 'training')
     {
         $sid = 'TRS';
         $tid = 'TRT';
+        $ospath = "$opath/train.src";
+        $otpath = "$opath/train.tgt";
+        $oapath = "$opath/train.ali";
     }
     elsif($corptype eq 'test')
     {
         $sid = 'S';
         $tid = 'R';
+        $ospath = "$opath/test.src";
+        $otpath = "$opath/test.tgt";
+        $oapath = "$opath/test.ali";
     }
     elsif($corptype eq 'test.system')
     {
         $sid = 'S';
         $tid = 'H';
+        $ospath = "$opath/test.src";
+        $otpath = "$opath/test.system.tgt";
+        $oapath = "$opath/test.system.ali";
     }
     open(SRC, $spath) or die("Cannot read $spath: $!\n");
     open(TGT, $tpath) or die("Cannot read $tpath: $!\n");
     open(ALI, $apath) or die("Cannot read $apath: $!\n");
+    open(OSRC, ">$ospath") or die("Cannot write $ospath: $!\n");
+    open(OTGT, ">$otpath") or die("Cannot write $otpath: $!\n");
+    open(OALI, ">$oapath") or die("Cannot write $oapath: $!\n");
     my $i_sentence = 0;
     while(1)
     {
@@ -136,6 +149,10 @@ sub index_corpus
         my $srcline = <SRC>;
         my $tgtline = <TGT>;
         my $aliline = <ALI>;
+        # Copy the lines just read to the output folder.
+        print OSRC ($srcline);
+        print OTGT ($tgtline);
+        print OALI ($aliline);
         # Chop off the line break.
         $srcline =~ s/\r?\n$//;
         $tgtline =~ s/\r?\n$//;
@@ -168,6 +185,9 @@ sub index_corpus
     close(SRC);
     close(TGT);
     close(ALI);
+    close(OSRC);
+    close(OTGT);
+    close(OALI);
     print STDERR ("Found $i_sentence word-aligned sentence pairs.\n");
     print STDERR ("The index contains ", scalar(keys(%{$index})), " distinct words (both source and target).\n");
 }
