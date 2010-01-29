@@ -16,20 +16,42 @@ public class ErrorCategorizer {
 	public enum Tristate {
 		TRUE, FALSE, UNKNOWN
 	};
+	
+	int reachErrors = 0;
+	int searchErrors = 0;
+	int modelErrors = 0;
+	
+	private void printStats() {
+		System.out.println();
+		System.out.println("OVERALL");
+		System.out.println("Reach  Errors: " + reachErrors);
+		System.out.println("Search Errors: " + searchErrors);
+		System.out.println("Model  Errors: " + modelErrors);
+	}
 
 	public void printCategorization(int i, String desired, NBestList forced, NBestList vanilla) {
 		ErrorCategory cat = categorize(i, desired, forced, vanilla);
 		System.out.println("Sentence: " + i);
-		System.out.println("Reachable: " + cat.reachable);
+		System.out.println("Reach  Error: " + cat.reachableError);
 		System.out.println("Search Error: " + cat.searchError);
-		System.out.println("Model Error: " + cat.modelError);
+		System.out.println("Model  Error: " + cat.modelError);
+		
+		if(cat.reachableError == Tristate.TRUE) {
+			reachErrors++;
+		}
+		if(cat.searchError == Tristate.TRUE) {
+			searchErrors++;
+		}
+		if(cat.modelError == Tristate.TRUE) {
+			modelErrors++;
+		}
 	}
 
 	public ErrorCategory categorize(int i, String desired, NBestList forced, NBestList vanilla) {
 		ErrorCategory cat = new ErrorCategory();
-		cat.reachable = hasReachabilityError(desired, forced);
-		cat.searchError = hasReachabilityError(desired, forced);
-		cat.modelError = hasReachabilityError(desired, forced);
+		cat.reachableError = hasReachabilityError(desired, forced);
+		cat.searchError = hasSearchError(desired, forced, vanilla);
+		cat.modelError = hasModelError(desired, forced, vanilla);
 		return cat;
 	}
 
@@ -129,5 +151,6 @@ public class ErrorCategorizer {
 		for (int i = 0; i < vanilla.size(); i++) {
 			cat.printCategorization(i, desired.get(i), forced.get(i), vanilla.get(i));
 		}
+		cat.printStats();
 	}
 }

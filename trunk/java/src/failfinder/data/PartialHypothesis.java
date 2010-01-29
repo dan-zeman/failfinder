@@ -32,13 +32,13 @@ public class PartialHypothesis {
 		
 		hyp.antecedents = tokenizeInts(barScan.next(), ",");
 		hyp.yield = barScan.next();
-		hyp.feats = tokenizeFloats(barScan.next(), " ");
+		hyp.feats = tokenizeFeats(barScan.next(), " ");
 		hyp.totalCost = barScan.nextFloat();
 		
 		return hyp;
 	}
 
-	public static float[] tokenizeFloats(String next, String string) {
+	public static float[] tokenizeFeats(String next, String string) {
 		// TODO Auto-generated method stub
 		return null;
 	}
