@@ -1,5 +1,7 @@
 package failfinder.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PartialHypothesis {
@@ -13,6 +15,7 @@ public class PartialHypothesis {
 	public String yield;
 	public float[] feats;
 	public float totalCost;
+	public List<Integer> possibleContinuations = new ArrayList<Integer>();
 
 	public static PartialHypothesis parse(String str) {
 		PartialHypothesis hyp = new PartialHypothesis();
