@@ -1,0 +1,324 @@
+<html>
+<head>
+<style type="text/css">
+.barup {
+border: 1px solid black;
+color: black;
+background-color: white;
+text-align: left;
+font-size: 12px;
+padding-right:1px;
+border-top:0px;
+}
+
+.bardown {
+border: 1px solid black;
+color: black;
+background-color: white;
+text-align: left;
+font-size: 12px;
+padding-right:1px;
+border-bottom:0px;
+}
+
+.align {
+border: 1px solid black;
+color: black;
+background-color: white;
+text-align: left;
+font-size: 24px;
+padding-right:1px;
+height: auto;
+margin-bottom:20px;
+display:bloc;
+}
+
+.cell_on {
+
+background-color: red;
+}
+
+.cell_off {
+background-color:white;
+}
+
+
+</style>
+
+
+<!-- <script language="javascript" src="nist.data.txt.js"></script> -->
+<script language="javascript" src="data.js"></script>
+
+<script language="javascript">
+
+var errors_names = Array("SEARCH","REACH", "LM","TM","SRC");
+var errors = Array(1,0,1,1,1);
+var errors2 = Array(0,1,0,0,0);
+
+/*function dhtmlLoadScript(url)
+{
+	var url = "data.js";
+	var e = document.createElement("script");
+	e.src = url;
+	e.type="text/javascript";
+	document.getElementsByTagName("head")[0].appendChild(e); 
+}
+*/
+function findElement(e) {
+    var theTarget = e.target;
+    if( theTarget && ( e.target.nodeType == 3 || e.target.nodeType == 4 ) ) {
+        theTarget = theTarget.parentNode;
+    }
+    return theTarget;
+}
+
+function build(measure, target, s) {
+  
+    var values = orig_values.slice();
+    //console.debug("build : "+measure+" "+target+" "+s);
+    
+    if(s == 1) values.sort(function(a, b){return b[measure] - a[measure]});
+    else if(s == -1) values.sort(function(a, b){return a[measure] - b[measure]});
+    
+    var min = 9999999;
+    var max = -9999999;
+    
+    for(var i = 0; i < values.length; i++) {
+        if(min > values[i][measure]) min = values[i][measure];
+        if(max < values[i][measure]) max = values[i][measure];
+    }
+    
+    // get column id
+    var parent = document.getElementById(target);
+    // remove all children of that parent
+    while(parent.children.length > 0) parent.removeChild(parent.lastChild);
+    
+    var is_first = 1;
+    for(var i = 0; i < values.length; i++) 
+    {
+        var width = 30 + 140 * (values[i][measure] - min) / (max - min);
+        var element = document.createElement("div");
+        
+        if(s >= 0)
+        {
+        	element.className = "barup";
+        }
+        else
+        {
+        	element.className = "bardown";
+        }
+        element.appendChild(document.createTextNode(values[i][measure]));
+        element.style.height = "14px";
+        element.style.width = Math.floor(width) + "px";
+        element.setAttribute('system', values[i][0]);
+        
+		if(i%2 == 0) element.setAttribute('errors', errors);
+		else element.setAttribute('errors', errors2);
+		
+        element.onmouseout = function(e) 
+        {
+            var matches = document.getElementsByTagName('div');
+            var sysid = findElement(e).getAttribute('system');
+            for(var j = 0; j < matches.length; j++) 
+            {
+                if(matches[j].getAttribute('system') == sysid) 
+                {
+                    matches[j].style.background = matches[j].getAttribute('old_color');
+                }
+            }
+            
+            var err = document.getElementById('errors');
+            for(var i=0; i<err.children.length; i++)
+            {
+            	//err.children[i].setAttribute('', '');
+            	err.children[i].class = '.cell_off';
+            }
+            
+        };
+        element.onmouseover = function(e) 
+        { 
+        	var el = findElement(e);
+            var matches = document.getElementsByTagName('div');
+            var sysid = findElement(e).getAttribute('system');
+            for(var j = 0; j < matches.length; j++) 
+            {
+                if(matches[j].getAttribute('system') == sysid) 
+                {
+                    matches[j].setAttribute('old_color', matches[j].style.background);
+                    matches[j].style.background = "yellow";
+                }
+            }
+            
+            var err = document.getElementById('errors');
+            for(var i=0; i<err.children.length; i++)
+            {
+            	if(el.getAttribute('errors')[i] == 0)
+            	{
+            		err.children[i].setAttribute('class', 'cell_off');
+            	}
+            	else
+            	{
+            		err.children[i].setAttribute('class', 'cell_on');
+            	}
+            }
+            
+        };
+        if(is_first == 1 && s >= 0) 
+        {
+            is_first = 0;
+            element.style.border = "1px solid black";
+        }
+        else if((i == values.length-1) && s < 0)
+        {
+        	element.style.border = "1px solid black";
+        }
+        parent.appendChild(element);
+    }
+}
+
+function hidecolumn(which)
+{
+	if (!document.getElementById)
+		return
+	which.style.display='none';
+}
+
+function showcolumn(which)
+{
+	if (!document.getElementById)
+		return
+	//which.style.display='table-col'
+	//	which.style.display = 'inline'
+	which.style.display = '';
+}
+
+function showhide() 
+{
+    parent = document.getElementById("data");
+    for(var i=1; i < parent.children.length; i++ ) 
+    {	
+    	var name = parent.children[i].id;
+    	if(document.getElementById("c"+name).checked) 
+		{		//console.debug(name+" showed");
+				showcolumn(document.getElementById(name));
+				showcolumn(document.getElementById("h"+name));
+		}
+		else 
+		{		//console.debug(name+" hidden");
+				hidecolumn(document.getElementById(name));
+				hidecolumn(document.getElementById("h"+name));
+		}
+    }	
+}
+
+function update() 
+{
+    for(var i = 0; i < header[0].length; i++)
+    {
+		//console.debug(""+header[0][i]+" "+i);    	
+		build(i, header[0][i], header[1][i]);
+    }
+    showhide();
+}
+
+function make_checkboxes()
+{
+   	//console.debug("make checkboxes : "+header[0].length); 
+    for(var i = 1; i < header[0].length; i++)
+    {
+    	var name = header[0][i];
+		document.write("<input onclick='showhide();' id='c"+name+"' type='checkbox' name='metric' checked ></input>" + name);
+    }
+}
+
+function make_table()
+{
+	document.write('<table border="0">');
+	document.write('<tr id="headers">');
+	for(var i = 0; i < header[0].length; i++)
+	{
+		var name = header[0][i];
+		document.write("<td id='h"+name+"' >"+name+"</td>");
+	}
+ 	document.write('</tr>');
+
+ 	document.write('<tr id="data">');	
+	for(var i = 0; i < header[0].length; i++)
+	{
+		var name = header[0][i];
+		document.write("<td id='"+name+"' ></td>");
+	}
+	document.write('</tr>');
+ 	document.write('</table>');
+}
+
+function show(type)
+{
+	if(type == "REF")
+	{
+		document.write("This is a wonderful reference , you can not beat it");
+	}
+	else if(type == "ORA")
+	{
+		document.write("This is a wonderful oracle , try to beat me");
+	}
+	else if(type == "HYP")
+	{
+		document.write("This is a poor hypothesis , I am too bad");
+	}
+	else{ return; }
+}
+
+function make_alignment_div()
+{
+	document.write('<div class="align">');
+	document.write('REF : ');
+	show("REF");
+	document.write('<br/>');
+	document.write('ORA : ');
+	show("ORA");
+	document.write('<br/>');
+	document.write('HYP : ');
+	show("HYP");
+	document.write("</div>");
+}
+
+function make_errors_div()
+{
+	document.write('<div class="align" id="errors">ERRORS : ');
+	for(var i=0; i<errors.length; i++)
+	{
+		if(errors[i]) document.write('<span class="cell_on">'+errors_names[i]+'</span>');
+		else document.write('<span class="cell_off">'+errors_names[i]+'</span>');
+	
+		document.write('<span>  </span>');
+	}
+	document.write("</div>");
+}
+
+function buildpage() 
+{
+	//here we could make a div which includes Martin alignment
+	make_alignment_div();
+	make_errors_div();
+	make_checkboxes();	
+	make_table();
+	update();
+}
+</script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+buildpage();
+</script>
+
+<input type="submit" value="RELOAD !" />
+
+</body>
+</html>
+
+
+
+
