@@ -34,9 +34,9 @@ public class ErrorCategorizer {
 
 	public Tristate hasReachabilityError(String desired, NBestList forced) {
 		if (isReachable(desired, forced)) {
-			return Tristate.TRUE;
-		} else {
 			return Tristate.FALSE;
+		} else {
+			return Tristate.TRUE;
 		}
 	}
 
