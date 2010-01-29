@@ -1,13 +1,23 @@
+SUMMARY OF FAILFINDER EFFORTS DURING THE 4TH MT MARATHON
 
-Loïc : 
-My work consisted in making a unificating interface to show several sentence level metrics and alignments in a easy-readable and fashion way.
+Loï¿½c : 
+My work consisted in making a unifying interface to show several sentence level metrics and alignments in a easy-readable and fashion way.
 I provide a prepare_data.pl script which role is to converts raw data to javascript which will later be used in the html file.
 
 prepare_data.pl needs as input a basename (let's call it base). 
 2 kinds of data are considered for now : 
  - header : stored in base.header. Contains the column names.
  - data : stored in base.data. Guess what's inside ;)
+ 
 
+Jonathan:
+- Worked on Error Categorizor and Search Path Analyzer in the java/ directory.
+- Error Categorizor requires forced and vanilla n-best lists from cdec or Moses.
+- Search Path Analyzer requires search path dumps from cdec or Moses.
+- We provide converters for n-best lists, but the search path formats are currently patches
+  and are not in the trunk distribution of these decoders
+- Scripts for running cdec with forced decoding are checked in
+- Still waiting on work in Moses search graph output and forced decoding to be completed.
 
 TODO list : 
  - include Martin/David other people from Charles University's alignment results ont top of this page.
