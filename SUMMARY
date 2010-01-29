@@ -1,0 +1,17 @@
+
+Loïc : 
+My work consisted in making a unificating interface to show several sentence level metrics and alignments in a easy-readable and fashion way.
+I provide a prepare_data.pl script which role is to converts raw data to javascript which will later be used in the html file.
+
+prepare_data.pl needs as input a basename (let's call it base). 
+2 kinds of data are considered for now : 
+ - header : stored in base.header. Contains the column names.
+ - data : stored in base.data. Guess what's inside ;)
+
+
+TODO list : 
+ - include Martin/David other people from Charles University's alignment results ont top of this page.
+ - include realistics errors from Jon's work.
+ 
+ 
+ 
