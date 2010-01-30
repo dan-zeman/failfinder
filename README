@@ -30,6 +30,75 @@ QUESTIONS
 	- Why didn't my system translate this sentence as X? (Forced decoding + error categorization)
 	- Where did it all go wrong? (Search path comparison)
 
+
+
+OOV Experiments
+
+- A very rough estimate of reachability.
+  $MOSES/scripts/analysis/oov.pl
+
+  	Training	    	Test	
+  	Toks    	Voc 	Toks	Voc
+en	75M     	595k	66k 	9k
+cs	66M     	856k	56k 	15k
+
+n-grams Out of Vocabulary	   1	    2	    3	    4
+en                       	1.5%	13.9%	47.8%	79.1%
+cs                       	2.2%	29.7%	69.2%	90.0%
+
+
+
+
+Reachability with Moses
+
+- Code by Lane Schwartz; in trunk.
+  moses –i in.txt –constraint ref.txt –f moses.ini
+- Search not quite exhaustive, bounded by:
+  - phrase table filtration; this is OK.
+  - -ttable-limit; this is OK.
+  - -distortion-limit; this is OK.
+  - -translation-option-threshold
+  - -max-partial-trans-opt (default 10000)
+  - -persistent-cache-size (default 10000)
+  - -max-trans-opt-per-coverage (default 50!!)
+
+
+
+
+en<->cs Reachability
+
+Distortion    	->cs	->cs 	->csLEM	->en
+             3	 1.4	  3.5	    2.7	  1.7
+             6	 1.9	  4.8	    3.9	  2.2
+            10	 2.2	  5.4	    4.6	  2.3
+            30	 2.4	  5.9	    5.1	  2.4
+            40	 2.4	  5.9	    5.1	  2.4
+Parallel sents	126k	6M   	126k   	126k
+BLEU          	9.94	15.59	(16.94)	15.38
+
+Tested on 2525 sents.
+
+
+
+Linguistically Promising Factored Setup
+
+- Two alternative paths:
+   form -> form(+lemma+tag)
+   form -> lemma+tag -generate-> form
+- Fights target-side sparseness.
+- Can use a large monolingual corpus for generation.
+
+- Good:
+  - OOV of the generation step 1.1%
+  - Reachability hopefully 5\% (estimated on 625 sents)
+- Bad:
+  - BLEU 12.07±0.45 instead of 13.43±0.45
+  - Reachability takes 7--22 min/sent instead of 0.3 sec/sent
+  - MERT needed 30 iterations instead of 13
+
+
+
+
 ERROR CATEGORIZER
 Jonathan Clark
 
