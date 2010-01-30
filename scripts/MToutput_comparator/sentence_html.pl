@@ -74,10 +74,10 @@ function change_style(cb,cl) {
 <body>
 
 <p align='center'>
-show SRC: <input type=\"checkbox\" checked onclick=\"change_style(this,'.src')\">\&nbsp;\&nbsp;
-show REF: <input type=\"checkbox\" checked onclick=\"change_style(this,'.ref')\">\&nbsp;\&nbsp;
-show TST1: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst1')\">\&nbsp;\&nbsp;
-show TST2: <input type=\"checkbox\" checked onclick=\"change_style(this,'.tst2')\">
+<input type=\"checkbox\" checked onclick=\"change_style(this,'.src')\">show SRC</input>\&nbsp;\&nbsp;
+<input type=\"checkbox\" checked onclick=\"change_style(this,'.ref')\">show REF</input>\&nbsp;\&nbsp;
+<input type=\"checkbox\" checked onclick=\"change_style(this,'.tst1')\">show TST1</input>\&nbsp;\&nbsp;
+<input type=\"checkbox\" checked onclick=\"change_style(this,'.tst2')\">show TST2</input>
 </p>
 ";
 
