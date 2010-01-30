@@ -1,0 +1,3 @@
+= MT-output comparator =
+
+[http://ufal.mff.cuni.cz/~marecek/sample.html]
