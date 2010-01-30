@@ -83,6 +83,19 @@ BLEU          	9.94	15.59	(16.94)	15.38
 Tested on 2525 sents.
 
 
+en->cs Reachability of Training Data
+
+Distortion	Reachability
+         3	        65.0
+         6	        66.5
+        10	        75.4
+        30	        85.0
+        40	        85.2
+        60	        85.2
+       100	        85.2
+
+Tested on 2k of 126k training sentences.
+
 
 Linguistically Promising Factored Setup
 
