@@ -46,6 +46,10 @@ n-grams Out of Vocabulary	   1	    2	    3	    4
 en                       	1.5%	13.9%	47.8%	79.1%
 cs                       	2.2%	29.7%	69.2%	90.0%
 
+1-grams OOV in en->cs phrase-table
+en (source)	1.6%	Eastronville, ..., Héma-Québec, bed-space
+cs (target)	2.3%	-, names, declinated nouns
+=> most of the corpus actually gets to the phrase table
 
 
 
