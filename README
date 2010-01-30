@@ -99,6 +99,16 @@ Linguistically Promising Factored Setup
 
 
 
+SEARCH GRAPH VISUALISER
+
+by Loic
+
+$MOSES/scripts/analysis/sg2dot.pl
+
+
+
+
+
 ERROR CATEGORIZER
 Jonathan Clark
 
