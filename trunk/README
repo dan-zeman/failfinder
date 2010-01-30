@@ -97,6 +97,24 @@ Linguistically Promising Factored Setup
   - MERT needed 30 iterations instead of 13
 
 
+MT-OUTPUT COMPARATOR
+
+- simple tool (written in Perl) for visualisation of differences
+  - between two MT-systems
+  - between two versions of one MT-system
+
+- input:
+  - source sentences,
+  - reference translations,
+  - two MT-outputs we want to compare
+
+- output:
+  - HTML file with highlighted matching sequences
+  - sentences are sorted according to the difference in number of n-grams  matching the reference
+ 
+/scripts/MToutput_comparator
+http://ufal.mff.cuni.cz/~marecek/sample.html
+
 
 
 SEARCH GRAPH VISUALISER
