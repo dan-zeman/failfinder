@@ -85,14 +85,14 @@ Tested on 2525 sents.
 
 en->cs Reachability of Training Data
 
-Distortion	Reachability
-         3	        65.0
-         6	        66.5
-        10	        75.4
-        30	        85.0
-        40	        85.2
-        60	        85.2
-       100	        85.2
+Distortion\TTable Limit	  10	  20	  50	 100	 500
+                      3	64.2	65.0	65.7	65.7	65.7
+                      6	65.2	66.5	67.5	67.5	67.5
+                     10	73.5	75.4	77.2	77.2	77.2
+                     30	82.7	85.0	-   	-   	-
+                     40	82.9	85.2	-   	-   	-
+                     60	82.9	85.2	-   	-   	-
+                    100	-   	85.2	-   	-   	-
 
 Tested on 2k of 126k training sentences.
 
