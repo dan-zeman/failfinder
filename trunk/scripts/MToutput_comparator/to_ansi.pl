@@ -8,7 +8,13 @@ use Term::ANSIColor;
 binmode STDIN, ":utf8";
 binmode STDOUT, ":utf8";
 
-my @COLORS = ("on_red", "on_green", "on_blue");
+my $color_tst1 = "yellow";
+my $color_tst2 = "cyan";
+my $color_tstboth = "green";
+# there is a bug in ANSICOLOR that swaps on_cyan and on_yellow, swap back
+my $oncolor_tst1 = "$color_tst2";
+my $oncolor_tst2 = "$color_tst1";
+my @COLORS = ("black on_$oncolor_tst1", "black on_$oncolor_tst2", "black on_$color_tstboth");
 
 my $reset = color("reset");
 
@@ -17,11 +23,11 @@ while (<>) {
     chomp;
     next if /^\#/;
     my ( $info, $src, $ref, $tst1, $tst2 ) = split ( /\t/, $_ );
-    print "$info\n";
-    print "SRC: $src\n";
-    print "REF: ".print_sentence($ref)." \n";
-    print "TST1: ".print_sentence($tst1)." \n";
-    print "TST2: ".print_sentence($tst2)." \n";
+    print colored("$info\n", "white on_black");
+    print colored("SRC: $src\n", "black on_white");
+    print colored("REF: ", "green").print_sentence($ref)." \n";
+    print colored("TST1: ", $color_tst1).print_sentence($tst1)." \n";
+    print colored("TST2: ", $color_tst2).print_sentence($tst2)." \n";
     print "\n";
 }
 
