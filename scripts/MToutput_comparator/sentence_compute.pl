@@ -53,8 +53,8 @@ sub matching_ngrams {
     my $n = $#ngrams;
     while ( $n >= 0 ) {
         foreach my $ngram ( @{$ngrams[$n]} ) {
-            if ( ( !all { defined $used1[$_] } ( $ngram->[0] .. ($ngram->[0] + $n) ) )
-              && ( !all { defined $used2[$_] } ( $ngram->[1] .. ($ngram->[1] + $n) ) ) ) {
+            if ( ( all { !defined $used1[$_] } ( $ngram->[0] .. ($ngram->[0] + $n) ) )
+              && ( all { !defined $used2[$_] } ( $ngram->[1] .. ($ngram->[1] + $n) ) ) ) {
                 map { $used1[$_] = 1} ( $ngram->[0] .. ($ngram->[0] + $n) );
                 map { $used2[$_] = 1} ( $ngram->[1] .. ($ngram->[1] + $n) );
                 push @brackets1, [$ngram->[0], $ngram->[0] + $n];

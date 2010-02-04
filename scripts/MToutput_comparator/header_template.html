@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>MT Output Comparison</title>
+<style type="text/css">
+.sentence{border: 2px ridge gray;}
+.onlyA { background-color: #88F; }
+.onlyB { background-color: #F88; }
+.AandB { background-color: #B5B; }
+.sent_info { padding: 0px; font-size: small; font-weight: bold; color: #505; }
+.info { font-size: small; font-weight: bold;}
+.src  { background-color: #DDD; }
+.ref  { background-color: #DFD; }
+.tstA, .a{ background-color: #DDF; }
+.tstB, .b{ background-color: #FDD; }
+.sentence B {color:#D00; border:5px solid black; margin-left:0.1em;} /*for highlighting n-grams*/
+.n {text-align:right;}
+#ngrams {margin:auto;text-align:center;}
+table {border-collapse: collapse; border:4px ridge; margin:0.1em; display:inline-block;}
+td {border:1px solid black;border-left:0;}
+td.n {padding-left: 0.5em; border-right:0; }
+fieldset{padding:0;margin:.1em; display:inline;}
+body {margin-top:0;}
+#menu {background-color:#EEE; border: 1px solid black; position:fixed;}
+#nonmenu {padding-top:2.5em;}
+#show_all_button {display:none;}
+</style>
+<script type="text/javascript">
+/* <![CDATA[ */
+var all_sentences=[];
+var visible_sentences=[];
+var sent_infos=[];
+var infos=[];
+var references=[];
+var sources=[];
+var tests1=[];
+var tests2=[];
+var show_all_button;
+var confirmed;
+var unconfirmed;
+
+function prepare(){
+  var divs = document.getElementById('sentences').getElementsByTagName('div');
+  for(i=0;i<divs.length;i++){
+    if (divs[i].className=='sentence'){all_sentences.push(divs[i]);visible_sentences.push(divs[i]);}
+    else if (divs[i].className=='ref'){references.push(divs[i]);}
+    else if (divs[i].className=='src'){sources.push(divs[i]);}
+    else if (divs[i].className=='tstA'){tests1.push(divs[i]);}
+    else if (divs[i].className=='tstB'){tests2.push(divs[i]);}
+    else if (divs[i].className=='sent_info'){sent_infos.push(divs[i]);}
+    else if (divs[i].className=='info'){infos.push(divs[i]);}
+  }
+  show_all_button = document.getElementById('show_all_button');
+  confirmed = document.getElementById('confirmed');
+  unconfirmed = document.getElementById('unconfirmed');
+}
+
+function hide_show(elements_array, box) {
+  var state = box.checked ? 'block' : 'none';
+  for(var i=0;i<elements_array.length;i++){
+  	elements_array[i].style.display = state;
+  }
+}
+
+function filter(ids, phrase) {
+  show_all_button.style.display = 'inline';
+  for(var i=0;i<visible_sentences.length;i++){
+    var sent = visible_sentences[i];
+    sent.style.display = 'none';
+    var sent_divs = sent.getElementsByTagName('div');
+    for(var j=0;j<sent_divs.length;j++){
+      if (sent_divs[j].className=='t'){
+        sent_divs[j].innerHTML = sent_divs[j].innerHTML.replace(/<\/?b>/g,'');
+      }
+    }
+  }
+  visible_sentences=[];
+  var ids_array = ids.split(' ');
+  var regex = new RegExp(' (' + phrase + ') ','gi');
+  for(var i=0;i<ids_array.length;i++){
+    var sent = document.getElementById('s' + ids_array[i]);
+    if (sent != null){
+      visible_sentences.push(sent);
+      sent.style.display = 'block';
+      var sent_divs = sent.getElementsByTagName('div');
+      for(var j=0;j<sent_divs.length;j++){
+        if (sent_divs[j].className=='t'){
+          sent_divs[j].innerHTML = sent_divs[j].innerHTML.replace(regex, ' <b>$1</b> ');
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function show_all_sentences(){
+  for(var i=0;i<visible_sentences.length;i++){
+    var sent_divs = visible_sentences[i].getElementsByTagName('div');
+    for(var j=0;j<sent_divs.length;j++){
+      if (sent_divs[j].className=='t'){
+        sent_divs[j].innerHTML = sent_divs[j].innerHTML.replace(/<\/?b>/g,'');
+      }
+    }
+  }
+  visible_sentences=[];
+  for(var i=0;i<all_sentences.length;i++){
+    var sent = all_sentences[i];
+    visible_sentences.push(sent);
+    sent.style.display = 'block';
+  }
+  show_all_button.style.display = 'none';
+  return false;
+}
+/* ]]> */
+</script>
+</head>
