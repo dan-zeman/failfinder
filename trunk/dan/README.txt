@@ -1,6 +1,11 @@
 Dan's ADDICTER
 (automatic detection and display of common translation errors)
 
+===============================================================================
+PLEASE NOTE: As of 22-Feb-2010, there is a new, more detailed on-line
+installation guide at https://wiki.ufal.ms.mff.cuni.cz/user:zeman:addicter
+===============================================================================
+
 So far limited to:
 - quick lookup of word examples in context
 -- in training data
