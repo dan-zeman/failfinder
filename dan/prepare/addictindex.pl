@@ -24,6 +24,7 @@ binmode(STDIN, ":utf8");
 binmode(STDOUT, ":utf8");
 binmode(STDERR, ":utf8");
 use Getopt::Long;
+use dzsys;
 
 $opath = '.';
 GetOptions
@@ -38,18 +39,24 @@ GetOptions
     'ha=s'  => \$hapath,
     'o=s'   => \$opath
 );
-if($trspath eq '' || $trtpath eq '' || $trapath eq '' || $spath eq '' || $rpath eq '' || $hpath eq '' || $rapath eq '' || $hapath eq '')
+if($trspath eq '' || $trtpath eq '' || $trapath eq '')
 {
     usage();
-    die("All input paths are mandatory. The output path defaults to '.'.\n");
+    die("Training data input paths are mandatory. The output path defaults to '.'.\n");
 }
 # Build index.
 print STDERR ("Reading the training corpus...\n");
 index_corpus('training', $trspath, $trtpath, $trapath, \%index, $opath);
-print STDERR ("Reading the reference test data...\n");
-index_corpus('test', $spath, $rpath, $rapath, \%index, $opath);
-print STDERR ("Reading the system output...\n");
-index_corpus('test.system', $spath, $hpath, $hapath, \%index, $opath);
+if($spath ne '' && $rpath ne '' && $rapath ne '')
+{
+    print STDERR ("Reading the reference test data...\n");
+    index_corpus('test', $spath, $rpath, $rapath, \%index, $opath);
+}
+if($spath ne '' && $hpath ne '' && $hapath ne '')
+{
+    print STDERR ("Reading the system output...\n");
+    index_corpus('test.system', $spath, $hpath, $hapath, \%index, $opath);
+}
 # To speed up reading the index, do not save it in one huge file.
 # Instead, split it up according to the first letters of the words.
 # Collect the first characters of the indexed words.
@@ -128,9 +135,9 @@ sub index_corpus
         $otpath = "$opath/test.system.tgt";
         $oapath = "$opath/test.system.ali";
     }
-    open(SRC, $spath) or die("Cannot read $spath: $!\n");
-    open(TGT, $tpath) or die("Cannot read $tpath: $!\n");
-    open(ALI, $apath) or die("Cannot read $apath: $!\n");
+    my $hsrc = dzsys::gopen($spath);
+    my $htgt = dzsys::gopen($tpath);
+    my $hali = dzsys::gopen($apath);
     open(OSRC, ">$ospath") or die("Cannot write $ospath: $!\n");
     open(OTGT, ">$otpath") or die("Cannot write $otpath: $!\n");
     open(OALI, ">$oapath") or die("Cannot write $oapath: $!\n");
@@ -138,17 +145,17 @@ sub index_corpus
     while(1)
     {
         # Sanity check: All three files must have the same number of lines.
-        if(eof(SRC) && eof(TGT) && eof(ALI))
+        if(eof($hsrc) && eof($htgt) && eof($hali))
         {
             last;
         }
-        elsif(eof(SRC) || eof(TGT) || eof(ALI))
+        elsif(eof($hsrc) || eof($htgt) || eof($hali))
         {
             print STDERR ("WARNING! Source, target or alignment differ in number of sentences (eof at line no. $i_sentence).\n");
         }
-        my $srcline = <SRC>;
-        my $tgtline = <TGT>;
-        my $aliline = <ALI>;
+        my $srcline = <$hsrc>;
+        my $tgtline = <$htgt>;
+        my $aliline = <$hali>;
         # Copy the lines just read to the output folder.
         print OSRC ($srcline);
         print OTGT ($tgtline);
@@ -182,9 +189,9 @@ sub index_corpus
         }
         $i_sentence++;
     }
-    close(SRC);
-    close(TGT);
-    close(ALI);
+    close($hsrc);
+    close($htgt);
+    close($hali);
     close(OSRC);
     close(OTGT);
     close(OALI);
