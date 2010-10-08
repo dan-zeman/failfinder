@@ -19,7 +19,7 @@ my ( $system1, $system2, $maxn ) = ( undef, undef, 0 );
 my @ngram_table;
 my ( $lines,       $rows )      = ( 0, 0 );
 my ( $UNCONFIRMED, $CONFIRMED ) = ( 0, 1 );
-my @CLASSES = qw(onlyA onlyB AandB);
+my @CLASSES = qw(onlyA onlyB AandB alone);
 if ( defined $NGRAMS ) { read_ngrams($NGRAMS); }
 
 sub read_ngrams {
@@ -134,13 +134,14 @@ sub convert_brackets {
     my $output   = '';
 
     # separate brackets
-    $sentence =~ s/(\[\[\[|\]\]\]|\{\{\{|\}\}\})/\t$1\t/g;
+    $sentence =~ s/(\[\[\[|\]\]\]|\{\{\{|\}\}\}|<<<|>>>)/\t$1\t/g;
     $sentence =~ s/\t+/\t/g;
     $sentence =~ s/^\t*(.+)\t*$/$1/;
 
     my @chunks    = split( /\t/, $sentence );
     my $in_square = 0;
     my $in_curly  = 0;
+    my $in_angle  = 0;
     my $state     = 0;
 
     foreach my $chunk (@chunks) {
@@ -156,8 +157,17 @@ sub convert_brackets {
         elsif ( $chunk eq '}}}' ) {
             $in_curly = 0;
         }
+        elsif ( $chunk eq '<<<' ) {
+            $in_angle = 1;
+        }
+        elsif ( $chunk eq '>>>' ) {
+            $in_angle = 0;
+        }
         else {
             my $new_state = $in_square + $in_curly * 2;
+              # 0 for none, 1 for curly only, 2 for square only, 3 for both
+            $new_state = 4 if $new_state == 0 && $in_angle;
+              # 4 for alone
             if ( $new_state != $state ) {
                 $output .= ' </span>' if $state != 0;
                 $output .= '<span class="' . $CLASSES[ $new_state - 1 ] . '"> ' if $new_state != 0;
@@ -219,5 +229,5 @@ if ( defined $NGRAMS ) {
 print_sentences();
 print "</div>\n</body>\n</html>\n";
 
-# Copyright 2010 Martin Popel <popel@ufal.mff.cuni.cz>, David Mareček <marecek@ufal.mff.cuni.cz>
+# Copyright 2010 Martin Popel <popel@ufal.mff.cuni.cz>, David Mareček <marecek@ufal.mff.cuni.cz>, Ondrej Bojar <bojar@ufal.mff.cuni.cz>
 # License: GNU GPL
