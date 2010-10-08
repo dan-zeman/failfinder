@@ -23,8 +23,8 @@ while (<>) {
     chomp;
     next if /^\#/;
     my ( $info, $src, $ref, $tst1, $tst2 ) = split ( /\t/, $_ );
-    print colored("$info\n", "white on_black");
-    print colored("SRC: $src\n", "black on_white");
+    print colored("$info", "white on_black")."$reset\n";
+    print colored("SRC: $src", "black on_white")."$reset\n";
     print colored("REF: ", "green").print_sentence($ref)." \n";
     print colored("TST1: ", $color_tst1).print_sentence($tst1)." \n";
     print colored("TST2: ", $color_tst2).print_sentence($tst2)." \n";
