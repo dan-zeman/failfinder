@@ -81,13 +81,20 @@ while (<>) {
     my ($ref2_brackets, $tst2_brackets, $count2) = matching_ngrams( \@ref, \@tst2 );
 
     # identify unigrams unique to each of the hyps
-    my %toks1 = map { ( $_, 1) } @tst1;
-    my %toks2 = map { ( $_, 1) } @tst2;
+    my %toks1;
+    foreach my $tok (@tst1) {
+      $toks1{$tok}++;
+    }
+    my %toks2;
+    foreach my $tok (@tst2) {
+      $toks2{$tok}++;
+    }
     my %unique1;
     my %unique2;
     my $in_unique = 0;
     for(my $i=0; $i<@tst1; $i++) {
-        my $new_unique = !defined $toks2{$tst1[$i]};
+        my $new_unique = not $toks2{$tst1[$i]};
+        $toks2{$tst1[$i]} -- if $toks2{$tst1[$i]};
         if ($new_unique != $in_unique) {
           $in_unique = $new_unique;
           if ($in_unique) {
@@ -101,7 +108,8 @@ while (<>) {
 
     $in_unique = 0;
     for(my $j=0; $j<@tst2; $j++) {
-        my $new_unique = !defined $toks1{$tst2[$j]};
+        my $new_unique = not $toks1{$tst2[$j]};
+        $toks1{$tst2[$j]} -- if $toks1{$tst2[$j]};
         if ($new_unique != $in_unique) {
           $in_unique = $new_unique;
           $tst2[$j] = $in_unique ? '<<<'.$tst2[$j] : $tst2[$j].'>>>';
