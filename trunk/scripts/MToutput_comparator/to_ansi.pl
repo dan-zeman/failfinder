@@ -8,14 +8,14 @@ use Term::ANSIColor;
 binmode STDIN, ":utf8";
 binmode STDOUT, ":utf8";
 
-my $color_tst1 = "yellow"; # confirmed by ref, in tst1 only
-my $color_tst2 = "cyan";  # confirmed by ref, in tst2 only
-my $color_tstboth = "green"; # confirmed by ref, in both tsts
-my $color_alone = "red";  # not confirmed, not seen in other tst
+my $color_tst1 = "black on_yellow"; # confirmed by ref, in tst1 only
+my $color_tst2 = "black on_cyan";  # confirmed by ref, in tst2 only
+my $color_tstboth = "black on_green"; # confirmed by ref, in both tsts
+my $color_alone = "white on_red";  # not confirmed, not seen in other tst
 # there is a bug in ANSICOLOR that swaps on_cyan and on_yellow, swap back
-my $oncolor_tst1 = "$color_tst2";
-my $oncolor_tst2 = "$color_tst1";
-my @COLORS = ("black on_$oncolor_tst1", "black on_$oncolor_tst2", "black on_$color_tstboth", "black on_$color_alone");
+my $oncolor_tst1 = $color_tst2;
+my $oncolor_tst2 = $color_tst1;
+my @COLORS = ($oncolor_tst1, $oncolor_tst2, $color_tstboth, $color_alone);
 
 my $reset = color("reset");
 
