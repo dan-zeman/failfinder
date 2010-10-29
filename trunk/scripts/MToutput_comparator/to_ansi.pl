@@ -19,16 +19,23 @@ my @COLORS = ($oncolor_tst1, $oncolor_tst2, $color_tstboth, $color_alone);
 
 my $reset = color("reset");
 
+my $tst1name = "TST1";
+my $tst2name = "TST2";
 print $reset;
 while (<>) {
     chomp;
-    next if /^\#/;
+    if (/^\#/) {
+      my @cols = split /\t/;
+      $tst1name = $1 if $cols[3] =~ /^(.*?)=/;
+      $tst2name = $1 if $cols[4] =~ /^(.*?)=/;
+      next;
+    }
     my ( $info, $src, $ref, $tst1, $tst2 ) = split ( /\t/, $_ );
     print colored("$info", "white on_black")."$reset\n";
     print colored("SRC: $src", "black on_white")."$reset\n";
     print colored("REF: ", "green").print_sentence($ref)." \n";
-    print colored("TST1: ", $color_tst1).print_sentence($tst1)." \n";
-    print colored("TST2: ", $color_tst2).print_sentence($tst2)." \n";
+    print colored("$tst1name: ", $color_tst1).print_sentence($tst1)." \n";
+    print colored("$tst2name: ", $color_tst2).print_sentence($tst2)." \n";
     print "\n";
 }
 
