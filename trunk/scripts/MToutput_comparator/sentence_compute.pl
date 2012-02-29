@@ -143,6 +143,13 @@ while (<>) {
     foreach my $c (@$count1) { $diff += $c; }
     foreach my $c (@$count2) { $diff -= $c; }
 
-    print "$info ngc1=[".join(",",@$count1)."] ngc2=[".join(",",@$count2)."] diff=$diff\t$src\t".join( " ", @ref )."\t".join( " ", @tst1 )."\t".join(" ",@tst2)."\n";
+    my $diffinfo = "";
+    if ($diff<0) {
+      $diffinfo = " (lower better)";
+    } else {
+      $diffinfo = " (upper better)";
+    }
+
+    print "$info ngc1=[".join(",",@$count1)."] ngc2=[".join(",",@$count2)."] diff=$diff$diffinfo\t$src\t".join( " ", @ref )."\t".join( " ", @tst1 )."\t".join(" ",@tst2)."\n";
 }
 
